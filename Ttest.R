@@ -1,16 +1,19 @@
+#This code were used for analysing of raf22raf36 phosphoproteome data
+#cewated on : 2020/Sep/30
+#Author : Sotaro Katagiri
 
-setwd('  ') #‰ğÍ‚µ‚½‚¢ƒtƒ@ƒCƒ‹‚ª‘¶İ‚·‚éƒtƒHƒ‹ƒ_‚ğ‘I‚ÔBGUI‚©‚ç‚à‚Å‚«‚éB
+setwd('  ') #è§£æã—ãŸã„ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã‚’é¸ã¶ã€‚GUIã‹ã‚‰ã‚‚ã§ãã‚‹ã€‚
 csv = read.csv("forRforR.csv", header = T)
-peps = levels(csv$peptide) #ƒyƒvƒ`ƒh‚ÌƒŠƒXƒg
-pepn = length(peps) #ƒyƒvƒ`ƒh‚Ì”
+peps = levels(csv$peptide) #ãƒšãƒ—ãƒãƒ‰ã®ãƒªã‚¹ãƒˆ
+pepn = length(peps) #ãƒšãƒ—ãƒãƒ‰ã®æ•°
 
-countUP <- function(foldchange, p) {   #—LˆÓ‚Éã¸‚µ‚Ä‚¢‚é‚Æ‚PB—LˆÓ‚Å‚Í–³‚¯‚ê‚Î‚O‚ğ•Ô‚· ˆø”p‚É‚Íp’l‚ğ“ü‚ê‚éBdown‚Íˆø”‚Ì"foldchange"‚É‹t”‚ğ“n‚¹‚Î‚æ‚¢‚Î‚æ‚¢(ŒÄ‚Ño‚µ•¶QÆ)B
+countUP <- function(foldchange, p) {   #æœ‰æ„ã«ä¸Šæ˜‡ã—ã¦ã„ã‚‹ã¨ï¼‘ã€‚æœ‰æ„ã§ã¯ç„¡ã‘ã‚Œã°ï¼ã‚’è¿”ã™ å¼•æ•°pã«ã¯på€¤ã‚’å…¥ã‚Œã‚‹ã€‚downã¯å¼•æ•°ã®"foldchange"ã«é€†æ•°ã‚’æ¸¡ã›ã°ã‚ˆã„ã°ã‚ˆã„(å‘¼ã³å‡ºã—æ–‡å‚ç…§)ã€‚
   if (p >= 0.05) return(0)
   if (foldchange > 2) return(1)
   return(0)
 }
 
-Result = data.frame(                #‚ ‚ç‚©‚¶‚ßƒƒ‚ƒŠ—Ìˆæ‚ğŠm•Û‚µ‚Ä‚¨‚­B‚±‚¤‚µ‚È‚¢‚Æ’x‚¢B ‚Ù‚µ‚¢î•ñ•ªŠm•Û‚µ‚ÄA‚Ì‚¿‚Ìfor•¶“à‚Å’l‚ğŒvZB“K‹X‘‚«Š·‚¦‚éB
+Result = data.frame(                #ã‚ã‚‰ã‹ã˜ã‚ãƒ¡ãƒ¢ãƒªé ˜åŸŸã‚’ç¢ºä¿ã—ã¦ãŠãã€‚ã“ã†ã—ãªã„ã¨é…ã„ã€‚ ã»ã—ã„æƒ…å ±åˆ†ç¢ºä¿ã—ã¦ã€ã®ã¡ã®foræ–‡å†…ã§å€¤ã‚’è¨ˆç®—ã€‚é©å®œæ›¸ãæ›ãˆã‚‹ã€‚
   pepseq = numeric(pepn),
   WT0 = numeric(pepn),
   WT15 = numeric(pepn),
@@ -43,12 +46,12 @@ Result = data.frame(                #‚ ‚ç‚©‚¶‚ßƒƒ‚ƒŠ—Ìˆæ‚ğŠm•Û‚µ‚Ä‚¨‚­B‚±‚¤‚µ‚
 
 
 
-for(i in 1:pepn){       #p‚ÉŠeX‚Ìƒyƒvƒ`”z—ñ‚ğ‡Ÿ“ü‚ê‚Ä‚¢‚«for•¶‚ğ‚Ü‚í‚·Bp‚Í•¶š—ñŒ^
+for(i in 1:pepn){       #pã«å„ã€…ã®ãƒšãƒ—ãƒé…åˆ—ã‚’é †æ¬¡å…¥ã‚Œã¦ã„ãforæ–‡ã‚’ã¾ã‚ã™ã€‚pã¯æ–‡å­—åˆ—å‹
   p = peps[i]
-  a = csv[csv$peptide == p,]  #csv‚©‚çp‚Æˆê’v‚·‚éƒyƒvƒ`ƒh”z—ñ‚É‚Â‚¢‚Äƒf[ƒ^ƒtƒŒ[ƒ€Œ^‚Å‚Æ‚è‚¾‚·B
+  a = csv[csv$peptide == p,]  #csvã‹ã‚‰pã¨ä¸€è‡´ã™ã‚‹ãƒšãƒ—ãƒãƒ‰é…åˆ—ã«ã¤ã„ã¦ãƒ‡ãƒ¼ã‚¿ãƒ•ãƒ¬ãƒ¼ãƒ å‹ã§ã¨ã‚Šã ã™ã€‚
   Result[i,"pepseq"] = p
   
-  Result[i,"WT0"] = mean(a[a$sample == "WT0","area"])      #•½‹Ï’l
+  Result[i,"WT0"] = mean(a[a$sample == "WT0","area"])      #å¹³å‡å€¤
   Result[i,"WT15"] = mean(a[a$sample == "WT15","area"])
   Result[i,"WT30"] = mean(a[a$sample == "WT30","area"])
   Result[i,"WT90"] = mean(a[a$sample == "WT90","area"])
@@ -65,7 +68,7 @@ for(i in 1:pepn){       #p‚ÉŠeX‚Ìƒyƒvƒ`”z—ñ‚ğ‡Ÿ“ü‚ê‚Ä‚¢‚«for•¶‚ğ‚Ü‚í‚·Bp‚Í•¶
   Result[i,"fc_DKO30_WT30"] = Result[i,"DKO30"] / Result[i,"WT30"]
   Result[i,"fc_DKO90_WT90"] = Result[i,"DKO90"] / Result[i,"WT90"]
   
-  Result[i,"p_WT15_WT0"] = t.test(a[a$sample == "WT15","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value       #p-Value•ªU‚ª“™‚µ‚¢‚Æ‰¼’è‚µ‚È‚¢—¼‘¤ŒŸ’è
+  Result[i,"p_WT15_WT0"] = t.test(a[a$sample == "WT15","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value       #p-Valueåˆ†æ•£ãŒç­‰ã—ã„ã¨ä»®å®šã—ãªã„ä¸¡å´æ¤œå®š
   Result[i,"p_WT30_WT0"] = t.test(a[a$sample == "WT30","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value
   Result[i,"p_WT90_WT0"] = t.test(a[a$sample == "WT90","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value
   Result[i,"p_DKO0_WT0"]  = t.test(a[a$sample == "DKO0","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value
