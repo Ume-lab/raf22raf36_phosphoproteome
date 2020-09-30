@@ -1,18 +1,22 @@
-library(minpack.lm) #”ñüŒ`Å¬“ñæ–@‚ğs‚¤‚Ì‚É•K—v‚ÈƒpƒbƒP[ƒW
-library(snowfall) # •À—ñˆ—‚É•K—v‚ÈƒpƒbƒP[ƒW
+#This code were used for normalise of raf22raf36 phosphoproteome
+#cewated on : 2020/Sep/30
+#Author : Sotaro Katagiri
 
-Data = read.csv('norm.csv', header = T, row.name = 1) #ƒf[ƒ^ƒtƒŒ[ƒ€Œ^‚Å“Ç‚İ‚Ş
-Data <- matrix(as.matrix(Data), nrow(Data), ncol(Data)) #s—ñŒ^‚É•ÏŠ·
+library(minpack.lm) #éç·šå½¢æœ€å°äºŒä¹—æ³•ã‚’è¡Œã†ã®ã«å¿…è¦ãªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸
+library(snowfall) # ä¸¦åˆ—å‡¦ç†ã«å¿…è¦ãªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸
+
+Data = read.csv('norm.csv', header = T, row.name = 1) #ãƒ‡ãƒ¼ã‚¿ãƒ•ãƒ¬ãƒ¼ãƒ å‹ã§èª­ã¿è¾¼ã‚€
+Data <- matrix(as.matrix(Data), nrow(Data), ncol(Data)) #è¡Œåˆ—å‹ã«å¤‰æ›
 samplenum = 24
-parStart = numeric(samplenum * 3) # ŒW”‚Ì‰Šú’lB72‚Íƒtƒ@ƒCƒ‹”
-parStart = parStart + c(1, 1, 1)  #‰Šú’l‚Í‘O‰ñs‚Á‚½Œ‹‰Ê‚ğ‚Â‚©‚¤‚Æ‚¤‚Ü‚­ŒvZ‚Å‚«‚éB
+parStart = numeric(samplenum * 3) # ä¿‚æ•°ã®åˆæœŸå€¤ã€‚72ã¯ãƒ•ã‚¡ã‚¤ãƒ«æ•°
+parStart = parStart + c(1, 1, 1)  #åˆæœŸå€¤ã¯å‰å›è¡Œã£ãŸçµæœã‚’ã¤ã‹ã†ã¨ã†ã¾ãè¨ˆç®—ã§ãã‚‹ã€‚
 
 
-peparea = function(X, A) {               #ƒyƒvƒ`ƒh‚²‚Æ‚Ì–ÊÏ A‚ªŒW”ƒxƒNƒgƒ‹,X‚ª’Pˆêƒyƒvƒ`ƒh‚ÌÀ‘ª’l‚ğû‚ß‚½ƒxƒNƒgƒ‹
+peparea = function(X, A) {               #ãƒšãƒ—ãƒãƒ‰ã”ã¨ã®é¢ç© AãŒä¿‚æ•°ãƒ™ã‚¯ãƒˆãƒ«,XãŒå˜ä¸€ãƒšãƒ—ãƒãƒ‰ã®å®Ÿæ¸¬å€¤ã‚’åã‚ãŸãƒ™ã‚¯ãƒˆãƒ«
   B = A * X
-  I = numeric(samplenum)  #ƒTƒ“ƒvƒ‹‚²‚Æ‚Ì’è—Ê’l‚ğ‚µ‚Ü‚¤‹ó”  –ß‚è’l‚É‚·‚éB
+  I = numeric(samplenum)  #ã‚µãƒ³ãƒ—ãƒ«ã”ã¨ã®å®šé‡å€¤ã‚’ã—ã¾ã†ç©ºç®± æˆ»ã‚Šå€¤ã«ã™ã‚‹ã€‚
   for (i in 1:samplenum) {
-    I[i] = B[3 * i - 2] + B[3 * i - 1] + B[3 * i] #‚Rƒtƒ@ƒCƒ‹‚ğ‘«‚·
+    I[i] = B[3 * i - 2] + B[3 * i - 1] + B[3 * i] #ï¼“ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¶³ã™
   }
   res = 0
   for(i in 1:samplenum) {
@@ -24,15 +28,15 @@ peparea = function(X, A) {               #ƒyƒvƒ`ƒh‚²‚Æ‚Ì–ÊÏ A‚ªŒW”ƒxƒNƒgƒ‹,X‚ª
       if((a > 0) && (b > 0)) res = res + (a - b) ^ 2 
     }
   }
-  return(sqrt(res)) # nls.lmŠÖ”‚Å‰è“ñæ‚³‚ê‚é‚½‚ßA‚±‚±‚Å‚Í•½•ûª‚ğæ‚Á‚Ä‚¨‚­B
+  return(sqrt(res)) # nls.lmé–¢æ•°ã§åˆæ‰‹äºŒä¹—ã•ã‚Œã‚‹ãŸã‚ã€ã“ã“ã§ã¯å¹³æ–¹æ ¹ã‚’å–ã£ã¦ãŠãã€‚
 }
 
 
-sfInit(parallel = TRUE, cpus = 12) #ƒpƒ\ƒRƒ“‚ÌƒXƒŒƒbƒh”
+sfInit(parallel = TRUE, cpus = 12) #ãƒ‘ã‚½ã‚³ãƒ³ã®ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
 sfExportAll()
 
 resid = function(par, data) {
-  res = sfApply(data, 1, peparea, par)  #ã‚Ì®‚ğ‚·‚×‚Ä‚Ìsiƒyƒvƒ`ƒhj‚É‘Î‚µŒvZ‚µAƒxƒNƒgƒ‹‚Æ‚µ‚Äó‚¯æ‚éB
+  res = sfApply(data, 1, peparea, par)  #ä¸Šã®å¼ã‚’ã™ã¹ã¦ã®è¡Œï¼ˆãƒšãƒ—ãƒãƒ‰ï¼‰ã«å¯¾ã—è¨ˆç®—ã—ã€ãƒ™ã‚¯ãƒˆãƒ«ã¨ã—ã¦å—ã‘å–ã‚‹ã€‚
   return(res)
 }
 
@@ -43,7 +47,7 @@ sfStop()
 
 LM
 Data = read.csv('norm.csv',header = T)
-for(row in 1:dim(Data)[1]) { #pepmodseq‚Ì—ñ‚ğœ‚­‚½‚ß[1,2]ƒXƒ^[ƒg
+for(row in 1:dim(Data)[1]) { #pepmodseqã®åˆ—ã‚’é™¤ããŸã‚[1,2]ã‚¹ã‚¿ãƒ¼ãƒˆ
   for(col in 2:dim(Data)[2]) {
     Data[row,col] <- Data[row,col] * LM$par[col - 1]
   }
