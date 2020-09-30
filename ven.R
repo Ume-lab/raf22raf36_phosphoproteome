@@ -8,7 +8,7 @@ ABA_down = csv$ABA_down
 DKO_up = csv$DKO_up
 DKO_down = csv$DKO_down
 
-ABA_up= ABA_up[!is.na(ABA_up)]    #�󗓂̗v�f�͍폜
+ABA_up= ABA_up[!is.na(ABA_up)]    #‹ó—“‚Ì—v‘f‚Ííœ
 ABA_down = ABA_down[!is.na(ABA_down)]
 DKO_up = DKO_up[!is.na(DKO_up)]
 DKO_down = DKO_down[!is.na(DKO_down)]
