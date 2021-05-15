@@ -2,18 +2,18 @@
 #cewated on : 2020/Sep/30
 #Author : Sotaro Katagiri
 
-setwd('  ') #解析したいファイルが存在するフォルダを選ぶ。GUIからもできる。
+setwd('  ') 
 csv = read.csv("forRforR.csv", header = T)
-peps = levels(csv$peptide) #ペプチドのリスト
-pepn = length(peps) #ペプチドの数
+peps = levels(csv$peptide) 
+pepn = length(peps) 
 
-countUP <- function(foldchange, p) {   #有意に上昇していると１。有意では無ければ０を返す 引数pにはp値を入れる。downは引数の"foldchange"に逆数を渡せばよいばよい(呼び出し文参照)。
+countUP <- function(foldchange, p) {   
   if (p >= 0.05) return(0)
   if (foldchange > 2) return(1)
   return(0)
 }
 
-Result = data.frame(                #あらかじめメモリ領域を確保しておく。こうしないと遅い。 ほしい情報分確保して、のちのfor文内で値を計算。適宜書き換える。
+Result = data.frame(                
   pepseq = numeric(pepn),
   WT0 = numeric(pepn),
   WT15 = numeric(pepn),
@@ -46,12 +46,12 @@ Result = data.frame(                #あらかじめメモリ領域を確保し�
 
 
 
-for(i in 1:pepn){       #pに各々のペプチ配列を順次入れていきfor文をまわす。pは文字列型
+for(i in 1:pepn){      
   p = peps[i]
-  a = csv[csv$peptide == p,]  #csvからpと一致するペプチド配列についてデータフレーム型でとりだす。
+  a = csv[csv$peptide == p,]  
   Result[i,"pepseq"] = p
   
-  Result[i,"WT0"] = mean(a[a$sample == "WT0","area"])      #平均値
+  Result[i,"WT0"] = mean(a[a$sample == "WT0","area"])    
   Result[i,"WT15"] = mean(a[a$sample == "WT15","area"])
   Result[i,"WT30"] = mean(a[a$sample == "WT30","area"])
   Result[i,"WT90"] = mean(a[a$sample == "WT90","area"])
@@ -60,7 +60,7 @@ for(i in 1:pepn){       #pに各々のペプチ配列を順次入れていきfor
   Result[i,"DKO30"] = mean(a[a$sample == "DKO30","area"])
   Result[i,"DKO90"] = mean(a[a$sample == "DKO90","area"])
   
-  Result[i,"fc_WT15_WT0"] = Result[i,"WT15"] / Result[i,"WT0"]   #Foldchange
+  Result[i,"fc_WT15_WT0"] = Result[i,"WT15"] / Result[i,"WT0"]   
   Result[i,"fc_WT30_WT0"] = Result[i,"WT30"] / Result[i,"WT0"]
   Result[i,"fc_WT90_WT0"] = Result[i,"WT90"] / Result[i,"WT0"]
   Result[i,"fc_DKO0_WT0"] = Result[i,"DKO0"] / Result[i,"WT0"]
@@ -68,7 +68,7 @@ for(i in 1:pepn){       #pに各々のペプチ配列を順次入れていきfor
   Result[i,"fc_DKO30_WT30"] = Result[i,"DKO30"] / Result[i,"WT30"]
   Result[i,"fc_DKO90_WT90"] = Result[i,"DKO90"] / Result[i,"WT90"]
   
-  Result[i,"p_WT15_WT0"] = t.test(a[a$sample == "WT15","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value       #p-Value分散が等しいと仮定しない両側検定
+  Result[i,"p_WT15_WT0"] = t.test(a[a$sample == "WT15","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value      
   Result[i,"p_WT30_WT0"] = t.test(a[a$sample == "WT30","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value
   Result[i,"p_WT90_WT0"] = t.test(a[a$sample == "WT90","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value
   Result[i,"p_DKO0_WT0"]  = t.test(a[a$sample == "DKO0","area"], a[a$sample == "WT0","area"],var.equal=T)$p.value
